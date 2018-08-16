@@ -37,7 +37,7 @@ function getDefaultSize(defaultSize, minSize, maxSize, draggedSize) {
 }
 
 function removeNullChildren(children) {
-    return React.Children.toArray(children).filter(c => c);
+  return React.Children.toArray(children).filter(c => c);
 }
 class SplitPane extends React.Component {
   constructor(props) {
@@ -251,9 +251,16 @@ class SplitPane extends React.Component {
       newState[isPanel1Primary ? 'pane1Size' : 'pane2Size'] = newSize;
     }
 
+    const sizeVariable = isPanel1Primary ? 'pane2Size' : 'pane1Size';
     // unset the size on the non primary panel
     if (props.primary !== state.instanceProps.primary) {
-      newState[isPanel1Primary ? 'pane2Size' : 'pane1Size'] = undefined;
+      newState[sizeVariable] = undefined;
+    } else {
+      let sizeToDeduct = newSize;
+      if (props.resizerStyle && props.resizerStyle.width) {
+        sizeToDeduct = sizeToDeduct + props.resizerStyle.width;
+      }
+      newState[sizeVariable] = `calc(100% - ${sizeToDeduct}px)`;
     }
 
     // update the values in instanceProps
@@ -296,7 +303,7 @@ class SplitPane extends React.Component {
       : resizerClassName;
 
     const notNullChildren = removeNullChildren(children);
-    
+
     const style = Object.assign(
       {},
       {
